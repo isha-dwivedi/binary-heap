@@ -1,0 +1,175 @@
+#include <iostream>
+
+using namespace std;
+class bheap
+{
+    public:
+    int csize;
+    int msize;
+    int *arr;
+    bheap(int i)
+    {
+        arr= new int[i];
+    msize=i;
+        csize=0;
+    }
+    
+    int parent(int i)
+    { return (i-1)/2;
+        
+    }
+    int lt(int i)
+    {
+        return (2*i)+1;
+    }
+    int rt(int i)
+    {
+        return (2*i)+2;
+    }
+    
+    //swap
+    void swap( int *a, int *b)
+    {
+            int temp= *a;
+            *a= *b;
+            *b=temp;
+            
+    }
+    
+    void insert(int value)
+    {
+        //overflow
+        if(csize>msize)
+        {
+        cout<<"overflow"<<endl;
+        return;
+        }
+        csize++;
+        int i=csize-1;
+        arr[i]=value;
+        while(i>0)
+        {
+            if(arr[i]<arr[parent(i)])
+            /*{int temp=arr[i];
+            arr[i]=arr[parent(i)];
+            arr[parent(i)]=temp;}
+            else
+            break;*/
+            swap(&arr[i], &arr[parent(i)]);
+            i=parent(i);
+            
+        }
+    }
+    
+    //find-min
+    int min()
+    {
+        return arr[0];
+    }
+    
+    ///
+    int extractMin() 
+    { 
+        // Base case for Empty Heap
+        if(csize<=0)
+        return min();
+        // Base case for Heap with 1 value.
+        else if(csize==1)
+        {   csize--;
+            return arr[0];
+        }
+        
+        // Copy the last element to the root. 
+        int root = arr[0];
+        arr[0]=arr[csize-1];
+        csize--;
+        MinHeapify(0);
+        // Call MinHeapify on root. 
+        return root;
+        // Return the min (Store it, before you replace the root with the last element)
+    }
+    
+     void MinHeapify(int i) 
+    {   int l=lt(i);
+        int r=rt(i);
+        int smallest=i;
+        // Compare with left and right
+        if(l<csize && arr[i]>arr[l]  )
+        {   smallest=l;
+           // swap(&arr[i], & arr[rt(i)]);
+        }
+        if(r<csize  && arr[r]<arr[smallest] )
+        {
+            smallest=r;
+        }
+        // Replace with the smallest.
+        if(smallest != i)
+       { swap(&arr[smallest], &arr[i]);
+        MinHeapify(smallest); }
+        
+        // Call MinHeapify at the replaced child. 
+    } 
+    
+    
+    //decrease key
+  void decreaseKey(int i, int new_val) 
+    { 
+        // Algorithm for what happens when I reduce the value of an element
+        //indexed at i to new_val. You can assume new_val to be less than the present value of the element. 
+        arr[i] = new_val; 
+        for(i;i>0;i--)
+        {
+            if(arr[i]<arr[parent(i)])
+            {swap(&arr[i], &arr[parent(i)]);
+            i=parent(i);}
+        }
+        // Loop for correcting the Property 2.
+        // Compare with parent and move up till i == 0 or there is no violation. 
+
+    } 
+    //delete
+    void del(int i)
+    {
+        decreaseKey(i, min()); 
+    extractMin();
+    }
+    
+    void display()
+    {
+        for(int i=0; i<csize;i++)
+        cout<<arr[i]<<":";    
+        cout<<endl;
+}
+    
+};
+
+int main()
+{
+   bheap h(7);
+   h.insert(4);
+   h.insert(1);
+   h.insert(5);
+   h.insert(9);
+    h.insert(2);
+     h.insert(7);
+      h.insert(6);
+       h.insert(10);
+        h.display();
+     cout<<endl<<"min is:"<< h.extractMin()<<endl;
+      h.display();
+      h. decreaseKey(5,3);
+       h.display();
+       h.del(3);
+       h.display();
+       
+        
+  
+   
+
+    return 0;
+}
+
+
+
+
+
